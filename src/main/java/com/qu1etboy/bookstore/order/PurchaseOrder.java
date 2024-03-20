@@ -1,10 +1,12 @@
 package com.qu1etboy.bookstore.order;
 
+import com.qu1etboy.bookstore.promotion.Promotion;
+import com.qu1etboy.bookstore.promotion.PromotionCatalog;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.aspectj.weaver.ast.Or;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +22,9 @@ public class PurchaseOrder {
     @OneToMany(cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> promotionCodes;
+
     private OrderStatus status;
 
     @CreationTimestamp
@@ -31,10 +36,15 @@ public class PurchaseOrder {
     public PurchaseOrder() {
         orderItems = new ArrayList<>();
         status = OrderStatus.PENDING;
+        promotionCodes = new ArrayList<>();
     }
 
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
+    }
+
+    public void addPromotionCode(String code) {
+        promotionCodes.add(code);
     }
 
 }

@@ -24,6 +24,16 @@ public class OrderController {
         return orderService.createOrUpdateOrder();
     }
 
+    @PostMapping("/use/{code}")
+    public PurchaseOrder usePromotion(@PathVariable @NotEmpty String code) {
+        return orderService.usePromotion(code);
+    }
+
+    @GetMapping("/checkout")
+    public Cashier checkout() {
+        return orderService.checkout();
+    }
+
     @PostMapping("/pay")
     public boolean payOrder() {
         orderService.payOrder();
