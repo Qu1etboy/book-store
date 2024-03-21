@@ -8,8 +8,11 @@ public class PromotionService {
     @Autowired
     private PromotionCatalog promotionCatalog;
 
+    @Autowired
+    private PromotionFactory promotionFactory;
+
     public void addPromotion(PromotionRequest request) {
-        promotionCatalog.put(request.getCode(), PromotionFactory.createPromotion(request.getType(), request.getValue()));
+        promotionCatalog.put(request.getCode(), promotionFactory.createPromotion(request.getType(), request.getValue()));
     }
 
     public Promotion getPromotion(String code) {

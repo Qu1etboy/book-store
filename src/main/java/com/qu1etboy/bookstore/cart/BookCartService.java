@@ -10,7 +10,7 @@ import java.util.List;
 public class BookCartService {
 
     @Autowired
-    @Qualifier("bookCartList")
+    @Qualifier("bookCartRedis")
     private BookCart bookCart;
 
     public void addBookToCart(List<BookOrderRequest> bookOrders) {

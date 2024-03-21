@@ -4,9 +4,8 @@ import com.qu1etboy.bookstore.book.Book;
 import com.qu1etboy.bookstore.book.BookService;
 import com.qu1etboy.bookstore.cart.BookCartService;
 import com.qu1etboy.bookstore.cart.BookOrderRequest;
-import com.qu1etboy.bookstore.promotion.Promotion;
 import com.qu1etboy.bookstore.promotion.PromotionCatalog;
-import com.qu1etboy.bookstore.promotion.PromotionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
@@ -27,11 +27,8 @@ public class OrderService {
     @Autowired
     private PromotionCatalog promotionCatalog;
 
-    public List<PurchaseOrder> getOrders() {
-        return orderRepository.findAll();
-    }
+    private PurchaseOrder createOrUpdateOrder() {
 
-    public PurchaseOrder createOrUpdateOrder() {
         PurchaseOrder purchaseOrder = orderRepository.findPendingOrder().orElseGet(PurchaseOrder::new);
         List<BookOrderRequest> bookCart = bookCartService.getBookOrders();
 
@@ -51,6 +48,10 @@ public class OrderService {
         return orderRepository.save(purchaseOrder);
     }
 
+    public List<PurchaseOrder> getOrders() {
+        return orderRepository.findAll();
+    }
+
     public PurchaseOrder usePromotion(String code) {
         // Find the pending order
         PurchaseOrder purchaseOrder = orderRepository.findPendingOrder().orElseThrow();
@@ -62,8 +63,7 @@ public class OrderService {
     }
 
     public Cashier checkout() {
-        // Find the pending order
-        PurchaseOrder purchaseOrder = orderRepository.findPendingOrder().orElseThrow();
+        PurchaseOrder purchaseOrder = createOrUpdateOrder();
 
         return new Cashier(purchaseOrder, promotionCatalog);
     }
@@ -73,7 +73,7 @@ public class OrderService {
         PurchaseOrder purchaseOrder = orderRepository.findPendingOrder().orElseThrow();
 
         // Pay the order
-        System.out.println("Paying order: " + purchaseOrder.getId());
+        log.info("Paying order: " + purchaseOrder.getId());
 
         // Change the order status
         purchaseOrder.setStatus(OrderStatus.PAID);

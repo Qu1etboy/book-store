@@ -19,11 +19,6 @@ public class OrderController {
         return orderService.getOrders();
     }
 
-    @PostMapping
-    public PurchaseOrder createOrUpdateOrder() {
-        return orderService.createOrUpdateOrder();
-    }
-
     @PostMapping("/use/{code}")
     public PurchaseOrder usePromotion(@PathVariable @NotEmpty String code) {
         return orderService.usePromotion(code);
