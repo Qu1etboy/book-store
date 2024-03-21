@@ -12,7 +12,7 @@ public class CashPromotion implements Promotion {
     }
 
     @Override
-    public double apply(double price) {
-        return price - discount;
+    public double discount(double price) {
+        return discount;
     }
 }

@@ -3,9 +3,11 @@ package com.qu1etboy.bookstore.order;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qu1etboy.bookstore.promotion.Promotion;
 import com.qu1etboy.bookstore.promotion.PromotionCatalog;
+import com.qu1etboy.bookstore.promotion.PromotionManager;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class Cashier implements Serializable {
@@ -49,22 +51,19 @@ public class Cashier implements Serializable {
      */
     public double getTotalPriceWithDiscount() {
         double total = getTotalPrice();
-        for (String code : order.getPromotionCodes()) {
-            Promotion promotion = promotionCatalog.get(code);
-            if (promotion == null) {
-                continue;
-            }
-            total = promotion.apply(total);
-        }
+        List<Promotion> promotions = order.getPromotionCodes().stream()
+                .map(promotionCatalog::get)
+                .toList();
 
-        return total;
+        return new PromotionManager().apply(promotions, total);
     }
 
-//    public double checkout(ShoppingCart cart) {
-//        double total = cart.getTotal();
-//        for (String promotion : cart.getPromotions()) {
-//            total = promotionCatalog.get(promotion).apply(total);
-//        }
-//        return total;
-//    }
+    public double getTotalDiscount() {
+        double total = getTotalPrice();
+        List<Promotion> promotions = order.getPromotionCodes().stream()
+                .map(promotionCatalog::get)
+                .toList();
+
+        return new PromotionManager().getTotalDiscount(promotions, total);
+    }
 }

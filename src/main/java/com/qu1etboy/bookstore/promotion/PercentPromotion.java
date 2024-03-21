@@ -14,7 +14,7 @@ public class PercentPromotion implements Promotion {
     }
 
     @Override
-    public double apply(double price) {
-        return price - price * percent;
+    public double discount(double price) {
+        return price * percent;
     }
 }
